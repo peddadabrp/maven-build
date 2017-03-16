@@ -23,16 +23,18 @@ node {
     }
 }
 
-
+def build() {
+    stage ('Unit Test') {Sleeping() }    
+    stage ('Static Code Analysis') {CodeTest() }   
+    stage ('Publish to Artifactory') {UploadArtifact() }    
+    stage ('Download Artifact') {Downloadartifact() }    
+    stage ('Deploy QA') {DeployQA() }
+} 
 def Gradle() {
     stage ('Preparation') {PreparationGradleEnv() }
     stage ('Checkout') {Checkout() }
     stage ('Gradle build') {GradleBuild() }
-    stage ('Unit Test') {Sleeping() }
-    stage ('Static Code Analysis') {CodeTest() }
-    stage ('Publish to Artifactory') {UploadArtifact() }
-    stage ('Download Artifact') {Downloadartifact() }
-    stage ('Deploy QA') {DeployQA() }
+    build()
 }
 
 def Ant() {
@@ -40,33 +42,21 @@ def Ant() {
     stage ('Preparation') {PreparationANTEnv() }
     stage ('Checkout') {Checkout() }
     stage ('Ant build') {AntBuild() }
-    stage ('Unit Test') {Sleeping() }
-    stage ('Static Code Analysis') {CodeTest() }
-    stage ('Publish to Artifactory') {UploadArtifact() }
-    stage ('Download Artifact') {Downloadartifact() }
-    stage ('Deploy QA') {DeployQA() }
+    build()
 }
 
 def Msbuild() {
     stage ('Preparation') {PreparationMsbuildEnv() }
     stage ('Checkout') {Checkout() }
     stage ('MSbuild') {MsBuild() }
-    stage ('Unit Test') {Sleeping() }
-    stage ('Static Code Analysis') {CodeTest() }
-    stage ('Publish to Artifactory') {UploadArtifact() }
-    stage ('Download Artifact') {Downloadartifact() }
-    stage ('Deploy QA') {DeployQA() }
+    build()
 }
 
 def Maven() {
     stage ('Preparation') {PreparationMavenEnv() }
     stage ('Checkout') {Checkout() }
     stage ('Maven Build') {Mavenbuild() }
-    stage ('Unit Test') {Sleeping() }
-    stage ('Static Code Analysis') {CodeTest() }
-    stage ('Publish to Artifactory') {UploadArtifact() }
-    stage ('Download Artifact') {Downloadartifact() }
-    stage ('Deploy QA') {DeployQA() }
+    build()
 }
 
 def PreparationGradleEnv() {
