@@ -7,21 +7,17 @@ node {
     def gradlehome
     checkout scm
     if (fileExists("${WORKSPACE}/gradlew")) {
-        sh "echo ###-------GRADLE BUILD-------###"
+        sh "echo '###-------GRADLE BUILD-------###'"
         Gradle()
     } else if (fileExists("${WORKSPACE}/build.xml")) {
-        sh "echo ###-------ANT BUILD-------###"
+        sh "echo '###-------ANT BUILD-------###'"
         Ant()
     } else if (fileExists("${WORKSPACE}/**.sln")) {
-        sh "echo ###-------MSBUILD------###"
+        sh "echo '###-------MSBUILD------###'"
         Msbuild()
     } else if (fileExists("${WORKSPACE}/pom.xml")) {
-        sh "echo ###-------Maven Build------###"
+        sh "echo '###-------Maven Build------###'"
         Maven()
-        
-    } else if (fileExists("${WORKSPACE}/test.txt")) {
-        sh "cat $WORKSPACE/test.txt"
-        sh "rm -rf $WORKSPACE/test.txt"
     } else {
         sh "echo 'no files found'"
     }
