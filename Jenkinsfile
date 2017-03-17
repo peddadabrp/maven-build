@@ -3,6 +3,12 @@
 properties([pipelineTriggers([pollSCM(ignorePostCommitHooks: true, scmpoll_spec: '* * * * *')])])
 node {
     
+    stage ('Checkout') { checkout scm }
+    stage ('Verify src code') {VerifySCM() }
+}
+
+def VerifySCM() {
+    
     def mvnHome
     def anthome
     def gradlehome
@@ -22,8 +28,8 @@ node {
     } else {
         sh "echo 'no files found'"
     }
-}
 
+}
 def build() {
     stage ('Unit Test') {Sleeping() }
     stage ('Static Code Analysis') {CodeTest() }
@@ -35,7 +41,6 @@ def build() {
 
 def Gradle() {
     stage ('Preparation') {PreparationGradleEnv() }
-    stage ('Checkout') {Checkout() }
     stage ('Gradle build') {GradleBuild() }
     build()
 }
@@ -43,21 +48,18 @@ def Gradle() {
 def Ant() {
 
     stage ('Preparation') {PreparationANTEnv() }
-    stage ('Checkout') {Checkout() }
     stage ('Ant build') {AntBuild() }
     build()
 }
 
 def Msbuild() {
     stage ('Preparation') {PreparationMsbuildEnv() }
-    stage ('Checkout') {Checkout() }
     stage ('MSbuild') {MsBuild() }
     build()
 }
 
 def Maven() {
     stage ('Preparation') {PreparationMavenEnv() }
-    stage ('Checkout') {Checkout() }
     stage ('Maven Build') {Mavenbuild() }
     build()
 }
