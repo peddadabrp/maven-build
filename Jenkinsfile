@@ -3,15 +3,16 @@
 properties([pipelineTriggers([pollSCM(ignorePostCommitHooks: true, scmpoll_spec: '* * * * *')])])
 node {
     
+    def mvnHome
+    def anthome
+    def gradlehome
     stage ('Checkout') { checkout scm }
     stage ('Verify src code') {VerifySCM() }
+    
 }
 
 def VerifySCM() {
     
-    def mvnHome
-    def anthome
-    def gradlehome
     if (fileExists("${WORKSPACE}/gradlew")) {
         sh "echo '###-------GRADLE BUILD-------###'"
         Gradle()
