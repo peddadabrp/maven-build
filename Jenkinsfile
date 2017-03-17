@@ -1,5 +1,6 @@
 #!/usr/bin/env groovy
 
+properties([pipelineTriggers([pollSCM(ignorePostCommitHooks: true, scmpoll_spec: '* * * * *')])])
 node {
     
     def mvnHome
@@ -31,6 +32,7 @@ def build() {
     stage ('Deploy QA') {DeployQA() }
 
 }
+
 def Gradle() {
     stage ('Preparation') {PreparationGradleEnv() }
     stage ('Checkout') {Checkout() }
@@ -79,6 +81,7 @@ def env() {
     RELEASE_VERSION = '1.0'
     
 }
+
 def PreparationGradleEnv() {
     
     env()
