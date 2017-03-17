@@ -12,7 +12,7 @@ node {
 }
 
 def VerifySCM() {
-    
+    checkout scm
     if (fileExists("${WORKSPACE}/gradlew")) {
         sh "echo '###-------GRADLE BUILD-------###'"
         dir("${WORKSPACE}") {
@@ -36,7 +36,6 @@ def VerifySCM() {
     } else {
         sh "echo 'no files found'"
     }
-
 }
 def build() {
     stage ('Unit Test') {Sleeping() }
