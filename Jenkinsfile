@@ -12,7 +12,6 @@ def VerifySCM() {
     def mvnHome
     def anthome
     def gradlehome
-    checkout scm
     if (fileExists("${WORKSPACE}/gradlew")) {
         sh "echo '###-------GRADLE BUILD-------###'"
         Gradle()
