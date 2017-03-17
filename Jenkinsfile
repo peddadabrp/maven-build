@@ -15,16 +15,24 @@ def VerifySCM() {
     
     if (fileExists("${WORKSPACE}/gradlew")) {
         sh "echo '###-------GRADLE BUILD-------###'"
-        Gradle()
+        dir("${WORKSPACE}") {
+            Gradle()
+        }
     } else if (fileExists("${WORKSPACE}/build.xml")) {
         sh "echo '###-------ANT BUILD-------###'"
-        Ant()
+        dir("${WORKSPACE}") {
+            Ant()
+        }        
     } else if (fileExists("${WORKSPACE}/**.sln")) {
         sh "echo '###-------MSBUILD------###'"
-        Msbuild()
+        dir("${WORKSPACE}") {
+            Msbuild()
+        }         
     } else if (fileExists("${WORKSPACE}/pom.xml")) {
         sh "echo '###-------Maven Build------###'"
-        Maven()
+        dir("${WORKSPACE}") {
+            Maven()
+        }       
     } else {
         sh "echo 'no files found'"
     }
