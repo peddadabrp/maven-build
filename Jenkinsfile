@@ -13,24 +13,24 @@ node {
 
 def VerifySCM() {
     checkout scm
-    if (fileExists("${WORKSPACE}/gradlew")) {
+    if (fileExists("${Workspace}/gradlew")) {
         sh "echo '###-------GRADLE BUILD-------###'"
-        dir("${WORKSPACE}") {
+        dir("${Workspace}/") {
             Gradle()
         }
-    } else if (fileExists("${WORKSPACE}/build.xml")) {
+    } else if (fileExists("${Workspace}/build.xml")) {
         sh "echo '###-------ANT BUILD-------###'"
-        dir("${WORKSPACE}") {
+        dir("${Workspace}/") {
             Ant()
         }        
-    } else if (fileExists("${WORKSPACE}/**.sln")) {
+    } else if (fileExists("${Workspace}/**.sln")) {
         sh "echo '###-------MSBUILD------###'"
-        dir("${WORKSPACE}") {
+        dir("${Workspace}/") {
             Msbuild()
         }         
-    } else if (fileExists("${WORKSPACE}/pom.xml")) {
+    } else if (fileExists("${Workspace}/pom.xml")) {
         sh "echo '###-------Maven Build------###'"
-        dir("${WORKSPACE}") {
+        dir("${Workspace}/") {
             Maven()
         }       
     } else {
@@ -75,6 +75,8 @@ def env() {
     
     deleteDir()
     
+    Workspace = 'pwd()'
+    
     // Automation Dashboard URL
     URL_DASHBOARD = "${env.BUILD_URL}artifact/dashboard.htm"
 
@@ -98,7 +100,7 @@ def PreparationGradleEnv() {
 
     SCM_BRANCH = '*/master'
 
-    ARTIFACTORY_PATTERN = "${WORKSPACE}/**.tar.gz"
+    ARTIFACTORY_PATTERN = "${Workspace}/**.tar.gz"
 
     // Release Details
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.tar.gz"
@@ -113,7 +115,7 @@ def PreparationANTEnv() {
 
     SCM_BRANCH = '*/master'
 
-    ARTIFACTORY_PATTERN = "${WORKSPACE}/build/jar/**.jar"
+    ARTIFACTORY_PATTERN = "${Workspace}/build/jar/**.jar"
 
     // Release Details
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.jar"
@@ -127,7 +129,7 @@ def PreparationMsbuildEnv() {
 
     SCM_BRANCH = '*/master'
 
-    ARTIFACTORY_PATTERN = "${WORKSPACE}/**.sln"
+    ARTIFACTORY_PATTERN = "${Workspace}/**.sln"
 
     // Release Details
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.sln"
@@ -141,7 +143,7 @@ def PreparationMavenEnv() {
 
     SCM_BRANCH = '*/master'
     
-    ARTIFACTORY_PATTERN = "${WORKSPACE}/target/**.jar"
+    ARTIFACTORY_PATTERN = "${Workspace}/target/**.jar"
 
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.jar"
 
@@ -213,16 +215,16 @@ def Mavenbuild() {
 
 def CreateArtifact() {
     try {
-        sh "tar -czvf $ARTIFACT_NAME ${WORKSPACE} --exclude=${WORKSPACE}/readme.md --exclude=${WORKSPACE}/.*"
+        sh "tar -czvf $ARTIFACT_NAME ${Workspace} --exclude=${Workspace}/readme.md --exclude=${Workspace}/.*"
     } catch (Exception e) {
-        sh "ls -lart ${WORKSPACE}"
+        sh "ls -lart ${Workspace}"
     }
 }
 
 def UploadArtifact() {
 
     echo 'printing Build Stamp on Artifact'
-    fingerprint "${WORKSPACE}/$ARTIFACT_NAME"
+    fingerprint "${Workspace}/$ARTIFACT_NAME"
     def server = Artifactory.server "$SERVER_ID"
     def buildInfo = Artifactory.newBuildInfo()
     buildInfo.env.capture = true
@@ -251,7 +253,7 @@ def Downloadartifact() {
         "files": [
          {
             "pattern": "libs-snapshot-local/${JOB_NAME}/${BUILD_NUMBER}/$ARTIFACT_NAME",
-            "target": "$WORKSPACE/"
+"target": "${Workspace}/"
            }
     ]
   }"""
@@ -262,7 +264,7 @@ def PublishHTMLReport() {
     publishHTML([allowMissing: false,
     alwaysLinkToLastBuild: false,
     keepAll: false,
-    reportDir: "${WORKSPACE}/build/reports/chromeTest/tests",
+    reportDir: "${Workspace}/build/reports/chromeTest/tests",
     reportFiles: 'index.html', reportName: 'HTML Report'])
 }
 
