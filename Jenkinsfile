@@ -6,6 +6,7 @@ node {
     def mvnHome
     def anthome
     def gradlehome
+    deleteDir()
     stage ('Checkout') {checkout scm }
     stage ('Verify src code') {VerifySCM() }
     
@@ -72,8 +73,6 @@ def Maven() {
 }
 
 def env() {
-    
-    deleteDir()
     
     Workspace = 'pwd()'
     
