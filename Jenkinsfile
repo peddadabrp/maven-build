@@ -125,7 +125,7 @@ def PreparationMsbuildEnv() {
 def PreparationMavenEnv() {
 
     env()
-    URL_SOURCE = 'https://github.com/peddadabrp/sample-maven-project.git'
+    URL_SOURCE = 'https://github.com/peddadabrp/maven-build.git'
 
     SCM_BRANCH = '*/master'
     
