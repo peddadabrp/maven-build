@@ -23,16 +23,19 @@ node {
     }
 }
 
-
-def Gradle() {
-    stage ('Preparation') {PreparationGradleEnv() }
-    stage ('Checkout') {Checkout() }
-    stage ('Gradle build') {GradleBuild() }
+def build() {
     stage ('Unit Test') {Sleeping() }
     stage ('Static Code Analysis') {CodeTest() }
     stage ('Publish to Artifactory') {UploadArtifact() }
     stage ('Download Artifact') {Downloadartifact() }
     stage ('Deploy QA') {DeployQA() }
+
+}
+def Gradle() {
+    stage ('Preparation') {PreparationGradleEnv() }
+    stage ('Checkout') {Checkout() }
+    stage ('Gradle build') {GradleBuild() }
+    build()
 }
 
 def Ant() {
@@ -40,43 +43,27 @@ def Ant() {
     stage ('Preparation') {PreparationANTEnv() }
     stage ('Checkout') {Checkout() }
     stage ('Ant build') {AntBuild() }
-    stage ('Unit Test') {Sleeping() }
-    stage ('Static Code Analysis') {CodeTest() }
-    stage ('Publish to Artifactory') {UploadArtifact() }
-    stage ('Download Artifact') {Downloadartifact() }
-    stage ('Deploy QA') {DeployQA() }
+    build()
 }
 
 def Msbuild() {
     stage ('Preparation') {PreparationMsbuildEnv() }
     stage ('Checkout') {Checkout() }
     stage ('MSbuild') {MsBuild() }
-    stage ('Unit Test') {Sleeping() }
-    stage ('Static Code Analysis') {CodeTest() }
-    stage ('Publish to Artifactory') {UploadArtifact() }
-    stage ('Download Artifact') {Downloadartifact() }
-    stage ('Deploy QA') {DeployQA() }
+    build()
 }
 
 def Maven() {
     stage ('Preparation') {PreparationMavenEnv() }
     stage ('Checkout') {Checkout() }
     stage ('Maven Build') {Mavenbuild() }
-    stage ('Unit Test') {Sleeping() }
-    stage ('Static Code Analysis') {CodeTest() }
-    stage ('Publish to Artifactory') {UploadArtifact() }
-    stage ('Download Artifact') {Downloadartifact() }
-    stage ('Deploy QA') {DeployQA() }
+    build()
 }
 
-def PreparationGradleEnv() {
+def env() {
     
     deleteDir()
     
-    URL_SOURCE = 'https://github.com/geb/geb-example-gradle.git'
-
-    SCM_BRANCH = '*/master'
-
     // Automation Dashboard URL
     URL_DASHBOARD = "${env.BUILD_URL}artifact/dashboard.htm"
 
@@ -85,90 +72,65 @@ def PreparationGradleEnv() {
 
     //Artifactory server details
     SERVER_ID = 'AP5P5hu1iVpC7PnPLwoSg6YCs3k'
-    ARTIFACTORY_PATTERN = "${WORKSPACE}/**.tar.gz"
     ARTIFACTORY_TARGET = "libs-snapshot-local/${JOB_NAME}/${BUILD_NUMBER}/"
 
     // Release Details
     PROJECT_NAME = 'sample-project'
     RELEASE_VERSION = '1.0'
+    
+}
+def PreparationGradleEnv() {
+    
+    env()
+    URL_SOURCE = 'https://github.com/geb/geb-example-gradle.git'
+
+    SCM_BRANCH = '*/master'
+
+    ARTIFACTORY_PATTERN = "${WORKSPACE}/**.tar.gz"
+
+    // Release Details
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.tar.gz"
 
 }
 
 def PreparationANTEnv() {
-
-    deleteDir()
     
+    env()
+    // SCM Details
     URL_SOURCE = 'https://github.com/peddadabrp/ant-build.git'
 
     SCM_BRANCH = '*/master'
 
-    // Automation Dashboard URL
-    URL_DASHBOARD = "${env.BUILD_URL}artifact/dashboard.htm"
-
-    // Credentials configurations with respect to Jenkins
-    CREDENTIALS = '6152ec42-b301-4820-a1ea-582595560005'
-
-    //Artifactory server details
-    SERVER_ID = 'AP5P5hu1iVpC7PnPLwoSg6YCs3k'
     ARTIFACTORY_PATTERN = "${WORKSPACE}/build/jar/**.jar"
-    ARTIFACTORY_TARGET = "libs-snapshot-local/${JOB_NAME}/${BUILD_NUMBER}/"
 
     // Release Details
-    PROJECT_NAME = 'sample-project'
-    RELEASE_VERSION = '1.0'
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.jar"
 
 }
 
 def PreparationMsbuildEnv() {
 
-    deleteDir()
-    
+    env()
     URL_SOURCE = 'https://github.com/peddadabrp/msbuild-build.git'
 
     SCM_BRANCH = '*/master'
 
-    // Automation Dashboard URL
-    URL_DASHBOARD = "${env.BUILD_URL}artifact/dashboard.htm"
-
-    // Credentials configurations with respect to Jenkins
-    CREDENTIALS = '6152ec42-b301-4820-a1ea-582595560005'
-
-    //Artifactory server details
-    SERVER_ID = 'AP5P5hu1iVpC7PnPLwoSg6YCs3k'
     ARTIFACTORY_PATTERN = "${WORKSPACE}/**.sln"
-    ARTIFACTORY_TARGET = "libs-snapshot-local/${JOB_NAME}/${BUILD_NUMBER}/"
 
     // Release Details
-    PROJECT_NAME = 'sample-project'
-    RELEASE_VERSION = '1.0'
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.sln"
 
 }
 
 def PreparationMavenEnv() {
 
-    deleteDir()
-    
+    env()
     URL_SOURCE = 'https://github.com/peddadabrp/sample-maven-project.git'
 
     SCM_BRANCH = '*/master'
-
-    // Automation Dashboard URL
-    URL_DASHBOARD = "${env.BUILD_URL}artifact/dashboard.htm"
-
-    // Credentials configurations with respect to Jenkins
-    CREDENTIALS = '6152ec42-b301-4820-a1ea-582595560005'
-
-    //Artifactory server details
-    SERVER_ID = 'AP5P5hu1iVpC7PnPLwoSg6YCs3k'
+    
     ARTIFACTORY_PATTERN = "${WORKSPACE}/target/**.jar"
-    ARTIFACTORY_TARGET = "libs-snapshot-local/${JOB_NAME}/${BUILD_NUMBER}/"
 
-    // Release Details
-    PROJECT_NAME = 'sample-project'
-    RELEASE_VERSION = '1.0'
     ARTIFACT_NAME = "$PROJECT_NAME-${JOB_NAME}-$RELEASE_VERSION.${BUILD_NUMBER}.jar"
 
 }
