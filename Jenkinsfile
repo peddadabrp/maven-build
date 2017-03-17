@@ -6,7 +6,7 @@ node {
     def mvnHome
     def anthome
     def gradlehome
-    stage ('Checkout') { checkout scm }
+    stage ('Checkout') {checkout scm }
     stage ('Verify src code') {VerifySCM() }
     
 }
